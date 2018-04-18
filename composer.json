@@ -1,5 +1,5 @@
 {
-  "name": "huanl-php/core",
+  "name": "huanlphp/core",
   "description": "HuanLPHP framework core code",
   "homepage": "https://github.com/huanl-php",
   "support": {
@@ -13,6 +13,7 @@
     }
   ],
   "require": {
-    "php": "^7.1"
+    "php": "^7.1",
+    "huanl-php/container":"dev-master"
   }
 }
