@@ -14,6 +14,18 @@
   ],
   "require": {
     "php": "^7.1",
-    "huanlphp/container":"dev-master"
+    "huanlphp/container": "dev-master",
+    "huanlphp/routing": "dev-master",
+    "huanlphp/request": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "HuanL\\Core\\": ""
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "HuanL\\Core\\Tests\\": "tests/"
+    }
   }
 }
