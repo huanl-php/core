@@ -12,6 +12,26 @@ namespace HuanL\Core\ServiceProvider;
 use HuanL\Routing\Route as RouteInstance;
 
 class Route {
+
+    /**
+     * 路由配置
+     * @var array
+     */
+    protected static $config = [];
+
+
+    public static function loadRoute() {
+        $rootPath = app()->rootPath;
+        static::$config = require_once($rootPath . '/config/route.php');
+        foreach (static::$config as $key => $value) {
+            if (is_numeric($key)) {
+                if (file_exists($rootPath . '/route/' . $value)) {
+                    require_once $rootPath . '/route/' . $value;
+                }
+            }
+        }
+    }
+
     /**
      * 路由的get方法
      * @param string $uri
