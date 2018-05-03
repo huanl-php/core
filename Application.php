@@ -3,14 +3,12 @@
 
 namespace HuanL\Core;
 
-
-use const Couchbase\ENCODER_COMPRESSION_FASTLZ;
+use http\Env\Response;
 use HuanL\Container\Container;
 use HuanL\Request\Request;
-use HuanL\Routing\Route;
+use HuanL\Core\Facade\Route;
 use HuanL\Routing\Routing;
 
-require_once 'functions.php';
 
 class Application extends Container {
 
@@ -45,14 +43,16 @@ class Application extends Container {
         $this->instance(Container::class, $this);
 
         $this->singleton('request', Request::class);
+        $this->singleton('response', Response::class);
+
         $this->singleton('route', Routing::class);
-        \HuanL\Core\ServiceProvider\Route::loadRoute();
     }
 
     public function loadConfig() {
         if (file_exists($this->rootPath . '/config/app.php')) {
             $this->config = require_once $this->rootPath . '/config/app.php';
         }
+        Route::loadRoute();
     }
 
     public function send() {
@@ -60,6 +60,8 @@ class Application extends Container {
         if (is_string($return)) {
             echo $return;
         } else if (is_array($return)) {
+            $response= $this->make('response');
+            $response->contentType('json');
             echo json_encode($return,JSON_UNESCAPED_UNICODE);
         }
     }
