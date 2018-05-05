@@ -18,6 +18,11 @@ namespace HuanL\Core\Facade;
  * @method static \HuanL\Routing\Route options(string $uri, $action = null)
  * @method static \HuanL\Routing\Route any(string $uri, $action = null)
  * @method static \HuanL\Routing\Route route($method, string $uri, $action = null)
+ * @method static \HuanL\Routing\Routes group(string $name, Closure $method, array $parameteres = [])
+ * @method static void resolveControllerFile(string $path, string $suffix = 'Controller')
+ * @method static string name($key)
+ * @method static importRoute($routeArray)
+ * @method static array exportRoute(bool $isExportObject = true)
  *
  * @package HuanL\Core\Factory
  */

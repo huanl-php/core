@@ -5,10 +5,10 @@ namespace HuanL\Core;
 
 use http\Env\Response;
 use HuanL\Container\Container;
-use HuanL\Request\Request;
-use HuanL\Core\Facade\Route;
-use HuanL\Routing\Routing;
+use HuanL\Core\Components\Components;
+use HuanL\Core\Components\RouteComponents;
 
+require_once 'functions.php';
 
 class Application extends Container {
 
@@ -30,39 +30,153 @@ class Application extends Container {
      */
     public function __construct(string $rootPath) {
         $this->rootPath = $rootPath;
-        $this->registerBaseService();
+        $this->bindPathToContainer();
         $this->loadConfig();
+        $this->bindContainer();
+        $this->registerContainerAbstract();
+        $this->loadCoreComponents();
     }
 
     /**
-     * 注册基本服务
+     * 加载核心组件
      */
-    protected function registerBaseService() {
+    public function loadCoreComponents() {
+        $this->initComponents(RouteComponents::class);
+    }
+
+    /**
+     * 绑定路径到容器
+     */
+    public function bindPathToContainer() {
+        $this->instance('path', $this->rootPath);
+        $this->instance('path.config', $this->configPath());
+        $this->instance('path.controller', $this->controllerPath());
+        $this->instance('path.cache', $this->cachePath());
+    }
+
+    /**
+     * 返回应用根路径
+     * @return string
+     */
+    public function path(): string {
+        return $this->rootPath;
+    }
+
+    /**
+     * 返回应用配置目录
+     * @return string
+     */
+    public function configPath(): string {
+        return $this->rootPath . '/config';
+    }
+
+    /**
+     * 返回控制器目录
+     * @return string
+     */
+    public function controllerPath(): string {
+        return $this->rootPath . '/app/controller';
+    }
+
+    /**
+     * 返回缓存目录
+     * @return string
+     */
+    public function cachePath(): string {
+        return $this->rootPath . '/bootstrap/cache';
+    }
+
+    /**
+     * 绑定容器
+     */
+    protected function bindContainer() {
         static::setInstance($this);
         $this->instance('app', $this);
         $this->instance(Container::class, $this);
-
-        $this->singleton('request', Request::class);
-        $this->singleton('response', Response::class);
-
-        $this->singleton('route', Routing::class);
     }
 
-    public function loadConfig() {
-        if (file_exists($this->rootPath . '/config/app.php')) {
-            $this->config = require_once $this->rootPath . '/config/app.php';
+    /**
+     * 注册容器抽象类型
+     */
+    protected function registerContainerAbstract() {
+        $this->singleton('request', \HuanL\Request\Request::class);
+        $this->singleton('response', \HuanL\Request\Response::class);
+        $this->singleton('route', \HuanL\Routing\Routing::class);
+
+        //绑定配置中自义定的类型
+        foreach ($this->config['abstract'] as $key => $value) {
+            $this->singleton($key, $value);
         }
-        Route::loadRoute();
     }
 
-    public function send() {
+    /**
+     * 加载配置
+     * @param null $file
+     */
+    public function loadConfig($file = null) {
+        if (is_null($file)) {
+            $file = $this->rootPath . '/config/app.php';
+        }
+        if (file_exists($file)) {
+            $this->config = require_once $file;
+        }
+        $this->instance('app.config', $this->config);
+    }
+
+    /**
+     * 框架运行
+     */
+    public function run() {
+        //加载用户配置的初始组件
+        $this->loadInitComponents();
+
         $return = app('route')->resolve();
         if (is_string($return)) {
             echo $return;
         } else if (is_array($return)) {
-            $response= $this->make('response');
+            $response = $this->make('response');
             $response->contentType('json');
-            echo json_encode($return,JSON_UNESCAPED_UNICODE);
+            echo json_encode($return, JSON_UNESCAPED_UNICODE);
+        }else if ($return===false){
+            //没有找到,调用404页面或者其他
+            echo '404';
         }
     }
+
+    /**
+     * 加载初始组件
+     */
+    protected function loadInitComponents() {
+        if (isset($this->config['component'])) {
+            //读取配置中的component设置
+            foreach ($this->config['component'] as $value) {
+                $component = $this->initComponents($value);
+            }
+        }
+    }
+
+    /**
+     * 初始化组件
+     * @param $name
+     * @param $unique
+     * @return Components
+     */
+    public function initComponents($name): Components {
+        /** @var  Components */
+        $component = $this->make($name);
+        if (!$component instanceof Components) {
+            throw new ComponentException('The wrong Components, need to inherit Components abstract');
+        }
+        $component->init();
+        return $component;
+    }
+
+    /**
+     * 获取配置
+     * @return array
+     */
+    public function getConfig(): array {
+        return $this->config;
+    }
 }
+
