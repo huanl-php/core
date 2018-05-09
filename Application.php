@@ -52,6 +52,7 @@ class Application extends Container {
         $this->instance('path.config', $this->configPath());
         $this->instance('path.controller', $this->controllerPath());
         $this->instance('path.cache', $this->cachePath());
+        $this->instance('path.route', $this->routePath());
     }
 
     /**
@@ -68,6 +69,14 @@ class Application extends Container {
      */
     public function configPath(): string {
         return $this->rootPath . '/config';
+    }
+
+    /**
+     * 返回路由目录
+     * @return string
+     */
+    public function routePath(): string {
+        return $this->rootPath . '/route';
     }
 
     /**
@@ -137,7 +146,7 @@ class Application extends Container {
             $response = $this->make('response');
             $response->contentType('json');
             echo json_encode($return, JSON_UNESCAPED_UNICODE);
-        }else if ($return===false){
+        } else if ($return === false) {
             //没有找到,调用404页面或者其他
             echo '404';
         }
