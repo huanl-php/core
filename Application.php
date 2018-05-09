@@ -6,9 +6,8 @@ namespace HuanL\Core;
 use http\Env\Response;
 use HuanL\Container\Container;
 use HuanL\Core\Components\Components;
+use HuanL\Core\Components\ExceptionComponents;
 use HuanL\Core\Components\RouteComponents;
-
-require_once 'functions.php';
 
 class Application extends Container {
 
@@ -30,8 +29,8 @@ class Application extends Container {
      */
     public function __construct(string $rootPath) {
         $this->rootPath = $rootPath;
-        $this->bindPathToContainer();
         $this->loadConfig();
+        $this->bindConfigToContainer();
         $this->bindContainer();
         $this->registerContainerAbstract();
         $this->loadCoreComponents();
@@ -41,18 +40,21 @@ class Application extends Container {
      * 加载核心组件
      */
     public function loadCoreComponents() {
+        $this->initComponents(ExceptionComponents::class);
         $this->initComponents(RouteComponents::class);
     }
 
     /**
-     * 绑定路径到容器
+     * 绑定配置到容器
      */
-    public function bindPathToContainer() {
+    public function bindConfigToContainer() {
         $this->instance('path', $this->rootPath);
         $this->instance('path.config', $this->configPath());
         $this->instance('path.controller', $this->controllerPath());
         $this->instance('path.cache', $this->cachePath());
         $this->instance('path.route', $this->routePath());
+
+        $this->instance('debug', $this->debug());
     }
 
     /**
@@ -186,6 +188,14 @@ class Application extends Container {
      */
     public function getConfig(): array {
         return $this->config;
+    }
+
+    /**
+     * 是否为调试模式
+     * @return bool
+     */
+    public function debug(): bool {
+        return $this->config['debug'] ?? false;
     }
 }
 
