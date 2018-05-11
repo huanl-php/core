@@ -140,7 +140,6 @@ class Application extends Container {
     public function run() {
         //加载用户配置的初始组件
         $this->loadInitComponents();
-
         $return = app('route')->resolve();
         if (is_string($return)) {
             echo $return;

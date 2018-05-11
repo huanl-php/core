@@ -77,8 +77,12 @@ class ExceptionComponents extends Components {
         //先判断是否为调试模式,调试模式输出错误信息,否则输出报错
         if (app('debug')) {
             //输出详细的信息,获取错误文件的代码,附近几行,和跟踪
-            $code = static::get_file_line_code($errfile, $errline);
-            $out_html = 'Error Message:' . $errstr . '<br/>Code:<br/><pre>' . "\n" . $code . '</pre>';
+            //有些使用eval的函数的,判断一下文件是否存在
+            $code = 'File:' . $errfile . '<br/>Line:' . $errline;
+            if (file_exists($errfile)) {
+                $code .= 'Code:<br/><pre>' . static::get_file_line_code($errfile, $errline) . '</pre>';
+            }
+            $out_html = 'Error Message:' . $errstr . '<br/>' . $code;
             die($out_html);
         } else {
             //直接的报错页面,现在还没用模板直接先输出个文本吧,233
