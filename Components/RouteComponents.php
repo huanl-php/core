@@ -67,7 +67,7 @@ class RouteComponents extends Components {
      * @return string
      */
     public function getCacheFilePath($path): string {
-        return $this->app['path.cache'] . '/route_' . md5($path) . '.tmp';
+        return $this->app['path.cache'] . '/route/route_' . md5($path) . '.tmp';
     }
 
     /**

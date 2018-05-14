@@ -113,6 +113,7 @@ class Application extends Container {
         $this->singleton('request', \HuanL\Request\Request::class);
         $this->singleton('response', \HuanL\Request\Response::class);
         $this->singleton('route', \HuanL\Routing\Routing::class);
+        $this->singleton('view', \HuanL\Viewdeal\View::class);
 
         //绑定配置中自义定的类型
         foreach ($this->config['abstract'] as $key => $value) {
