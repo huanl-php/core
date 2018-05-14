@@ -148,8 +148,10 @@ class Application extends Container {
             $response = $this->make('response');
             $response->contentType('json');
             echo json_encode($return, JSON_UNESCAPED_UNICODE);
-        } else if ($return === false) {
-            //没有找到,调用404页面或者其他
+        } else if ($return instanceof \HuanL\Request\Response) {
+            echo $return->getResponse();
+        } else {
+            $this->make('response')->statusCode(404);
             echo '404';
         }
     }
