@@ -17,8 +17,9 @@
     "huanlphp/container": "dev-master",
     "huanlphp/routing": "dev-master",
     "huanlphp/request": "dev-master",
-    "huanlphp/viewdeal":"dev-master",
-    "monolog/monolog":"^1.2"
+    "huanlphp/viewdeal": "dev-master",
+    "huanlphp/db": "dev-master",
+    "monolog/monolog": "^1.2"
   },
   "autoload": {
     "files": [
