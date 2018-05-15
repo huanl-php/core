@@ -150,7 +150,7 @@ class Application extends Container {
             echo json_encode($return, JSON_UNESCAPED_UNICODE);
         } else if ($return instanceof \HuanL\Request\Response) {
             echo $return->getResponse();
-        } else {
+        } else if ($return === false) {
             $this->make('response')->statusCode(404);
             echo '404';
         }
