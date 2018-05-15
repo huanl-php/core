@@ -26,16 +26,18 @@ class RouteComponents extends Components {
     public function init() {
         //初始化路由组件,先判断有没有控制台路由定义的缓存,如果有就加载控制器的缓存
         //如果是调试模式,无视缓存
-        if ($this->app['debug'] || $this->isControlerRouteCache($this->controllerPath)) {
+        if ($this->app['debug'] && $this->isControlerRouteCache($this->controllerPath)) {
             //缓存有效,直接加载缓存文件导入路由
-            $routeArray = $this->getRouteCache($this->controllerPath);
-            Route::importRoute($routeArray);
-        } else {
-            //缓存无效,解析控制器文件,导出路由,保存到缓存
-            Route::resolveControllerFile($this->controllerPath);
-            $routeArray = Route::exportRoute(false);
-            $this->putRouteCache($routeArray);
+            if ($routeArray = $this->getRouteCache($this->controllerPath)) {
+                Route::importRoute($routeArray);
+                return true;
+            }
         }
+        //缓存无效,解析控制器文件,导出路由,保存到缓存
+        Route::resolveControllerFile($this->controllerPath);
+        $routeArray = Route::exportRoute(false);
+        $this->putRouteCache($routeArray);
+        return true;
     }
 
     /**
@@ -44,6 +46,9 @@ class RouteComponents extends Components {
      * @return array
      */
     public function getRouteCache($path): array {
+        if (!file_exists($this->getCacheFilePath($path))) {
+            return false;
+        }
         return json_decode(file_get_contents($this->getCacheFilePath($path)), true);
     }
 
@@ -53,12 +58,9 @@ class RouteComponents extends Components {
      * @return bool
      */
     public function putRouteCache($routeArray): bool {
-        try {
-            @file_put_contents($this->getCacheFilePath($this->controllerPath), json_encode($routeArray));
-        } catch (\Exception $e) {
-            return false;
-        }
-        return true;
+        return @file_put_contents(
+            $this->getCacheFilePath($this->controllerPath), json_encode($routeArray)
+        );
     }
 
     /**

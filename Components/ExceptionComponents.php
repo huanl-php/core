@@ -38,7 +38,7 @@ class ExceptionComponents extends Components {
                                          string $errfile,
                                          int $errline,
                                          array $errcontext): bool {
-        return static::out_error_msg($errno, $errstr, $errfile, $errline);
+        return static::out_error_msg(error_reporting(), $errstr, $errfile, $errline, true, $errcontext);
     }
 
     /**
@@ -51,6 +51,7 @@ class ExceptionComponents extends Components {
             $exception->getMessage(),
             $exception->getFile(),
             $exception->getLine(),
+            false,
             $exception->getTrace()
         );
 
@@ -63,6 +64,7 @@ class ExceptionComponents extends Components {
      * @param string $errstr
      * @param string $errfile
      * @param int $errline
+     * @param bool $error
      * @param array $trace
      * @return bool
      * @throws \HuanL\Container\InstantiationException
@@ -71,11 +73,19 @@ class ExceptionComponents extends Components {
                                          string $errstr,
                                          string $errfile,
                                          int $errline,
+                                         bool $error,
                                          array $trace = []): bool {
         //暂时用文本,等吧模板引擎弄了后用了后输出模板
 
+        //如果$error是0不处理
+        //因为@ error-control operator 前缀的语句发生错误时，这个值会是 0
+        if ($errno == 0 && $error) return false;
+
+        //取出是否为debug模式
+        $debug = app('debug');
+
         //先判断是否为调试模式,调试模式输出错误信息,否则输出报错
-        if (app('debug')) {
+        if ($debug) {
             //输出详细的信息,获取错误文件的代码,附近几行,和跟踪
             //有些使用eval的函数的,判断一下文件是否存在
             $code = 'File:' . $errfile . '<br/>Line:' . $errline;
@@ -83,11 +93,21 @@ class ExceptionComponents extends Components {
                 $code .= 'Code:<br/><pre>' . static::get_file_line_code($errfile, $errline) . '</pre>';
             }
             $out_html = 'Error Message:' . $errstr . '<br/>' . $code;
-            die($out_html);
         } else {
             //直接的报错页面,现在还没用模板直接先输出个文本吧,233
-            die ('error');
+            $out_html = 'error';
         }
+
+        //警告和注意级别不停止运行
+        //调试才输出上列级别的错误信息
+        if ($errno == E_WARNING || $errno == E_NOTICE) {
+            if ($debug) {
+                echo $out_html;
+            }
+        } else {
+            die($out_html);
+        }
+
     }
 
     /**
