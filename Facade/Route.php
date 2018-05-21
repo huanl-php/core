@@ -29,13 +29,6 @@ namespace HuanL\Core\Facade;
 class Route extends Facade {
 
     /**
-     * 路由配置
-     * @var array
-     */
-    protected static $config = [];
-
-
-    /**
      * 获取抽象类型
      * @return string
      */
