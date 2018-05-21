@@ -6,8 +6,10 @@ namespace HuanL\Core;
 use http\Env\Response;
 use HuanL\Container\Container;
 use HuanL\Core\Components\Components;
+use HuanL\Core\Components\DataBaseComponent;
 use HuanL\Core\Components\ExceptionComponents;
 use HuanL\Core\Components\RouteComponents;
+use function Sodium\crypto_sign;
 
 class Application extends Container {
 
@@ -42,6 +44,7 @@ class Application extends Container {
     public function loadCoreComponents() {
         $this->initComponents(ExceptionComponents::class);
         $this->initComponents(RouteComponents::class);
+        $this->initComponents(DataBaseComponent::class);
     }
 
     /**
@@ -114,7 +117,8 @@ class Application extends Container {
         $this->singleton('response', \HuanL\Request\Response::class);
         $this->singleton('route', \HuanL\Routing\Routing::class);
         $this->singleton('view', \HuanL\Viewdeal\View::class);
-
+        $this->singleton('dbconnect', \HuanL\Db\DbConnect::class);
+        $this->singleton('db', \HuanL\Db\Db::class);
         //绑定配置中自义定的类型
         foreach ($this->config['abstract'] as $key => $value) {
             $this->singleton($key, $value);
