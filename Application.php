@@ -184,7 +184,10 @@ class Application extends Container {
         if (!$component instanceof Components) {
             throw new ComponentException('The wrong Components, need to inherit Components abstract');
         }
-        $component->init();
+        if ($component->init() === false) {
+            //发生错误,结束这次请求
+            exit(0);
+        }
         return $component;
     }
 
