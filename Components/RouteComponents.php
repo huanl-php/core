@@ -26,7 +26,7 @@ class RouteComponents extends Components {
     public function init() {
         //初始化路由组件,先判断有没有控制台路由定义的缓存,如果有就加载控制器的缓存
         //如果是调试模式,无视缓存
-        if ($this->app['debug'] && $this->isControlerRouteCache($this->controllerPath)) {
+        if ($this->isRunCache()) {
             //缓存有效,直接加载缓存文件导入路由
             if ($routeArray = $this->getRouteCache($this->controllerPath)) {
                 Route::importRoute($routeArray);
@@ -34,10 +34,31 @@ class RouteComponents extends Components {
             }
         }
         //缓存无效,解析控制器文件,导出路由,保存到缓存
+        $this->cacheRoute();
         Route::resolveControllerFile($this->controllerPath);
         $routeArray = Route::exportRoute(false);
         $this->putRouteCache($routeArray);
         return true;
+    }
+
+    /**
+     * 缓存的路由,这里写的路由都会被缓存下来
+     * 但是注意添加的时候删除缓存
+     */
+    public function cacheRoute() {
+
+    }
+
+    /**
+     * 是否运行缓存
+     * @return bool
+     */
+    public function isRunCache() {
+        //如果是调试模式,无视缓存
+        if (!$this->app['debug'] && $this->isControlerRouteCache($this->controllerPath)) {
+            return true;
+        }
+        return false;
     }
 
     /**
