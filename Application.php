@@ -56,8 +56,18 @@ class Application extends Container {
         $this->instance('path.controller', $this->controllerPath());
         $this->instance('path.cache', $this->cachePath());
         $this->instance('path.route', $this->routePath());
+        $this->instance('path.app', $this->appPath());
 
         $this->instance('debug', $this->debug());
+        $this->instance('config', $this->config);
+    }
+
+    /**
+     * 应用路径
+     * @return mixed
+     */
+    public function appPath(){
+        return $this->rootPath . '/'.$this->config['application'];
     }
 
     /**
@@ -146,7 +156,7 @@ class Application extends Container {
         //加载用户配置的初始组件
         $this->loadInitComponents();
         $return = app('route')->resolve();
-        if (is_string($return)) {
+        if (is_string($return) || (method_exists($return,'__toString'))) {
             echo $return;
         } else if (is_array($return)) {
             $response = $this->make('response');
