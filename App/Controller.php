@@ -43,7 +43,7 @@ abstract class Controller extends BaseController {
         if (func_num_args() == 0) {
             return view();
         }
-        return new View(realpath($this->getViewPath() . '/' . $path . '.html'),
+        return new View($this->getViewPath() . '/' . $path . '.html',
             $controller ?? $this
         );
     }

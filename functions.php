@@ -46,7 +46,7 @@ if (!function_exists('view')) {
             /** @var \HuanL\Routing\Route $route */
             $route = app(\HuanL\Routing\Route::class);
             return $view = app('view', [
-                'template' => app('template').'/' . $route->getClassMethod() . '.html',
+                'template' => app('template') . '/' . $route->getClassMethod() . '.html',
                 'controller' => app('controller')
             ]);
         } else {
