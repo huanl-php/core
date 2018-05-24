@@ -3,8 +3,6 @@
 
 namespace HuanL\Core\App;
 
-use HuanL\Viewdeal\View;
-
 /**
  * 控制器基类,提供了视图一些基础的操作
  * Class Controller
@@ -35,15 +33,15 @@ abstract class Controller extends BaseController {
 
     /**
      * 得到相对于当前控制器视图目录的视图对象
-     * @param $path
+     * @param string $path
      * @param null $controller
-     * @return View
+     * @return \HuanL\Viewdeal\View
      */
-    public function view($path = '', $controller = null) {
+    public function view($path = '', $controller = null): \HuanL\Viewdeal\View {
         if (func_num_args() == 0) {
             return view();
         }
-        return new View($this->getViewPath() . '/' . $path . '.html',
+        return view($this->getViewPath() . '/' . $path . '.html',
             $controller ?? $this
         );
     }
