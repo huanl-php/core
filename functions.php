@@ -10,7 +10,7 @@ if (!function_exists('app')) {
      * 获取应用实例
      * @param null $abstract
      * @param array $parameter
-     * @return mixed
+     * @return Container|mixed
      * @throws \HuanL\Container\InstantiationException
      */
     function app($abstract = null, $parameter = []) {
@@ -30,7 +30,19 @@ if (!function_exists('instance')) {
      * @throws \HuanL\Container\InstantiationException
      */
     function instance($abstract, $instance) {
-        return Container::getInstance()->instance($abstract, $instance);
+        return app()->instance($abstract, $instance);
+    }
+}
+
+if (!function_exists('alias')) {
+    /**
+     * 设置别名
+     * @param $alias
+     * @param $abstract
+     * @throws \HuanL\Container\InstantiationException
+     */
+    function alias($alias, $abstract) {
+        return app()->alias($alias, $abstract);
     }
 }
 

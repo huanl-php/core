@@ -1,7 +1,7 @@
 <?php
 
 
-namespace HuanL\Core\App;
+namespace HuanL\Core\App\Controller;
 
 /**
  * 控制器基类,提供了视图一些基础的操作
@@ -27,7 +27,7 @@ abstract class Controller extends BaseController {
      * 获取视图模板路径
      * @return string
      */
-    public function getViewPath(): string {
+    protected function getViewPath(): string {
         return $this->viewPath;
     }
 
@@ -37,7 +37,7 @@ abstract class Controller extends BaseController {
      * @param null $controller
      * @return \HuanL\Viewdeal\View
      */
-    public function view($path = '', $controller = null): \HuanL\Viewdeal\View {
+    protected function view($path = '', $controller = null): \HuanL\Viewdeal\View {
         if (func_num_args() == 0) {
             return view();
         }
