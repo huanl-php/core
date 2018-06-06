@@ -90,7 +90,7 @@ class RouteComponents extends Components {
      * @return string
      */
     public function getCacheFilePath($path): string {
-        return $this->app['path.cache'] . '/route/route_' . md5($path) . '.tmp';
+        return $this->app['path.cache'] . '/route/route_' . md5($path) . '.json';
     }
 
     /**
@@ -102,7 +102,7 @@ class RouteComponents extends Components {
         //先判断路由缓存文件是否存在
         //然后判断缓存修改时间是否大于文件修改时间
         $file = $this->getCacheFilePath($path);
-        if (file_exists($file) && filemtime($file) > filemtime($path)) {
+        if (file_exists($file) && filemtime($file) >= filemtime($path)) {
             return true;
         }
         return false;
