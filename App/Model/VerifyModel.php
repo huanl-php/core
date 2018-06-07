@@ -132,13 +132,29 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
     }
 
     /**
-     *
-     * @param $key
+     * 获取错误列表
+     * @return array
+     */
+    public function getErrorList(): array {
+        return $this->verify->getErrorList();
+    }
+
+    /**
+     * 获取上一次错误
      * @return mixed
      */
-    public function getCheckData($key) {
+    public function getLastError() {
+        return $this->verify->getLastError();
+    }
+
+    /**
+     *
+     * @param $key
+     * @return string
+     */
+    public function getCheckData($key): string {
         // TODO: Implement getCheckData() method.
-        return $this->$key;
+        return empty($this->$key) ? '' : $this->$key;
     }
 
     /**
@@ -147,7 +163,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
      * @param $val
      * @return ICheckDataObject
      */
-    public function setCheckData($key, $val): ICheckDataObject {
+    public function setCheckData($key, string $val = ''): ICheckDataObject {
         // TODO: Implement setCheckData() method.
         $this->$key = $val;
         return $this;
