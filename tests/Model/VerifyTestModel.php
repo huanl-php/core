@@ -12,6 +12,7 @@ class VerifyTestModel extends VerifyModel {
      * @verify empty 用户名不能为空
      * @verify length 2,10 用户名过短
      * @verify regex /^[a-z]+$/ 用户名格式不正确
+     * @alias 用户名
      */
     public $user;
 
