@@ -5,7 +5,8 @@ namespace HuanL\Core\Facade;
 
 /**
  * Class Db
- * @method static \HuanL\Db\SQLDb table(string $table)
+ * @method static \HuanL\Db\Db table(string $table)
+ * @method static int lastId();
  * @method
  * @package HuanL\Core\Facade
  */
