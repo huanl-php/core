@@ -5,6 +5,7 @@ namespace HuanL\Core\Components;
 
 
 use HuanL\Container\Container;
+use HuanL\Extend\InsideHttpRequest;
 
 class ExceptionComponents extends Components {
 
@@ -76,7 +77,6 @@ class ExceptionComponents extends Components {
                                          bool $error,
                                          array $trace = []): bool {
         //暂时用文本,等吧模板引擎弄了后用了后输出模板
-
         //如果$error是0不处理
         //因为@ error-control operator 前缀的语句发生错误时，这个值会是 0
         if ($errno == 0 && $error) return false;
@@ -101,11 +101,32 @@ class ExceptionComponents extends Components {
         //警告和注意级别不停止运行
         //调试才输出上列级别的错误信息
         if ($debug) {
-            echo $out_html;
+            //如果是在phpunit中运行,对某些函数进行处理
+            $deal = false;
+            if (defined('PHPUNIT_COMPOSER_INSTALL')) {
+                $deal = static::dealPhpUnitFun($errno, $errstr, $errfile, $errline, $error, $trace);
+            }
+            if (!$deal) {
+                //没有处理才输出
+                echo $out_html;
+            }
         } else {
             die($out_html);
         }
         return true;
+    }
+
+    /**
+     * 处理一些phpunit会产生的问题
+     * 争对phpunit优化
+     */
+    public static function dealPhpUnitFun(int $errno, string $errstr, string $errfile, int $errline, bool $error, array $trace = []) {
+        if ($errno == 22527 && strpos($errstr, 'headers already sent by')) {
+            //对header处理
+            call_user_func_array([InsideHttpRequest::class, 'addHeader'], $trace);
+            return true;
+        }
+        return false;
     }
 
     /**
