@@ -20,6 +20,7 @@
     "huanlphp/viewdeal": "dev-master",
     "huanlphp/db": "dev-master",
     "huanlphp/verify": "dev-master",
+    "huanlphp/extend": "dev-master",
     "monolog/monolog": "^1.2"
   },
   "autoload": {

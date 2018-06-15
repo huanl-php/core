@@ -144,7 +144,7 @@ class Application extends Container {
             $file = $this->rootPath . '/config/app.php';
         }
         if (file_exists($file)) {
-            $this->config = require_once $file;
+            $this->config = require $file;
         }
         $this->instance('app.config', $this->config);
     }

@@ -40,7 +40,7 @@ abstract class BaseModel {
     protected function isModelCache(): bool {
         //判断路由缓存是否有效,先判断缓存文件是否存在
         //然后判断缓存文件创建(修改)时间大于原文件
-        if (file_exists($this->getCachePath()) && filemtime($this->getCachePath()) >= filemtime($this->classPath)) {
+        if (!app('debug') && file_exists($this->getCachePath()) && filemtime($this->getCachePath()) >= filemtime($this->classPath)) {
             return true;
         }
         return false;

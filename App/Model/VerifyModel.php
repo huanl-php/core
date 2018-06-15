@@ -31,7 +31,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
         $this->verify->bindObject($this);
         //将数据添加到成员
         foreach ($data as $key => $item) {
-            if (isset($this->$key)) {
+            if (property_exists($this, $key)) {
                 $this->$key = $item;
             }
         }
@@ -54,7 +54,6 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
             $ruleArray = $this->analyzeRule();
             file_put_contents($this->getCachePath(), json_encode($ruleArray));
         }
-
     }
 
     /**
@@ -72,6 +71,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
                 //重新设置规则标签
                 $rule->label($item[3]);
                 $this->verify->addCheckRule($rule);
+                $rule = new Rule();
             } else {
                 //通过第一个匹配项来判断操作
                 switch ($item[1]) {
@@ -96,6 +96,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
                 }
             }
         }
+        unset($rule);
         return $this->verify->getArrayRule();
     }
 

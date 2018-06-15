@@ -36,6 +36,6 @@ class DataBaseComponent extends Components {
         if (!file_exists($this->app['path.config'] . '/database.php')) {
             return false;
         }
-        return $this->dbConfig = require_once $this->app['path.config'] . '/database.php';
+        return $this->dbConfig = require $this->app['path.config'] . '/database.php';
     }
 }

@@ -100,14 +100,12 @@ class ExceptionComponents extends Components {
 
         //警告和注意级别不停止运行
         //调试才输出上列级别的错误信息
-        if ($errno == E_WARNING || $errno == E_NOTICE) {
-            if ($debug) {
-                echo $out_html;
-            }
+        if ($debug) {
+            echo $out_html;
         } else {
             die($out_html);
         }
-
+        return true;
     }
 
     /**
