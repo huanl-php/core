@@ -6,7 +6,6 @@ namespace HuanL\Core;
 use http\Env\Response;
 use HuanL\Container\Container;
 use HuanL\Core\Components\Components;
-use HuanL\Core\Components\DataBaseComponent;
 use HuanL\Core\Components\ExceptionComponents;
 use HuanL\Core\Components\RouteComponents;
 use function Sodium\crypto_sign;
@@ -44,7 +43,6 @@ class Application extends Container {
     public function loadCoreComponents() {
         $this->initComponents(ExceptionComponents::class);
         $this->initComponents(RouteComponents::class);
-        $this->initComponents(DataBaseComponent::class);
     }
 
     /**
