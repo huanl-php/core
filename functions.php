@@ -63,14 +63,14 @@ if (!function_exists('view')) {
         $template = realpath($template);
         $retView = new \HuanL\Viewdeal\View($template, $controller);
         //缓存检查
-        $cacheFile = app('path.cache') . '/' . md5($template) . '.php';
+        $cacheFile = app('path.cache') . '/view/' . md5($template) . '.php';
         if (file_exists($cacheFile) && filemtime($template) < filemtime($cacheFile)) {
             //缓存存在,并且缓存文件时间大于原文件时间,设置模板然后返回
             $retView->setTemplate(file_get_contents($cacheFile));
             return $retView;
         }
         //缓存不存在编译模板,保存返回
-        file_put_contents($cacheFile, $retView->compiled());
+        @file_put_contents($cacheFile, $retView->compiled());
         return $retView;
     }
 }

@@ -52,7 +52,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
         } else {
             //无缓存,分析验证模型文件,写入数据
             $ruleArray = $this->analyzeRule();
-            file_put_contents($this->getCachePath(), json_encode($ruleArray));
+            @file_put_contents($this->getCachePath(), json_encode($ruleArray));
         }
     }
 
