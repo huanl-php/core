@@ -30,12 +30,12 @@ class RouteComponents extends Components {
             //缓存有效,直接加载缓存文件导入路由
             if ($routeArray = $this->getRouteCache($this->controllerPath)) {
                 Route::importRoute($routeArray);
-                return true;
             }
+        } else {
+            //缓存无效,解析控制器文件,导出路由,保存到缓存
+            Route::resolveControllerFile($this->controllerPath);
         }
-        //缓存无效,解析控制器文件,导出路由,保存到缓存
         $this->cacheRoute();
-        Route::resolveControllerFile($this->controllerPath);
         $routeArray = Route::exportRoute(false);
         $this->putRouteCache($routeArray);
         return true;
