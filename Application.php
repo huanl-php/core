@@ -57,7 +57,6 @@ class Application extends Container {
         $this->instance('path.app', $this->appPath());
 
         $this->instance('debug', $this->debug());
-        $this->instance('config', $this->config);
     }
 
     /**
@@ -89,7 +88,7 @@ class Application extends Container {
      * @return string
      */
     public function routePath(): string {
-        return $this->rootPath . '/route';
+        return $this->rootPath . '/' . ($this->config['dir']['route'] ?? 'route');
     }
 
     /**
@@ -97,7 +96,7 @@ class Application extends Container {
      * @return string
      */
     public function controllerPath(): string {
-        return $this->rootPath . '/app/controller';
+        return $this->rootPath . '/' . ($this->config['dir']['controller'] ?? 'app/controller');
     }
 
     /**
@@ -105,7 +104,7 @@ class Application extends Container {
      * @return string
      */
     public function cachePath(): string {
-        return $this->rootPath . '/bootstrap/cache';
+        return $this->rootPath . '/' . ($this->config['dir']['cache'] ?? '/bootstrap/cache');
     }
 
     /**
