@@ -35,5 +35,6 @@
     "psr-4": {
       "HuanL\\Core\\Tests\\": "tests/"
     }
-  }
+  },
+  "minimum-stability":"dev"
 }
