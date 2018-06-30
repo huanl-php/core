@@ -10,7 +10,7 @@ if (!function_exists('app')) {
      * 获取应用实例
      * @param null $abstract
      * @param array $parameter
-     * @return Container|mixed
+     * @return \HuanL\Core\Application|mixed
      * @throws \HuanL\Container\InstantiationException
      */
     function app($abstract = null, $parameter = []) {

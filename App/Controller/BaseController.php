@@ -40,8 +40,8 @@ abstract class BaseController {
         $appPath = str_replace('\\', '/', app('path.app'));
         $this->classPath = str_replace('\\', '/', $reflection->getFileName());
         //去掉控制器的目录名字
-        $dir = str_replace($appPath, '',  $this->classPath);
-        $dir = str_replace('controller/', '', $dir);
+        $dir = str_replace($appPath, '', $this->classPath);
+        $dir = str_replace(app()->controllerConfig() . '/', '', $dir);
         //对后缀进行处理
         $dir = substr($dir, 0, strrpos($dir, 'Controller.php'));
         $this->dir = $dir;

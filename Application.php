@@ -64,7 +64,23 @@ class Application extends Container {
      * @return mixed
      */
     public function appPath() {
-        return $this->rootPath . '/' . ($this->config['application'] ?? '');
+        return $this->rootPath . '/' . $this->applicationConfig();
+    }
+
+    /**
+     * 配置中的app的值
+     * @return mixed|string
+     */
+    public function applicationConfig() {
+        return $this->config['application'] ?? 'app';
+    }
+
+    /**
+     * 配置中的Controller的值
+     * @return mixed|string
+     */
+    public function controllerConfig() {
+        return $this->config['dir']['controller'] ?? 'controller';
     }
 
     /**
@@ -96,7 +112,7 @@ class Application extends Container {
      * @return string
      */
     public function controllerPath(): string {
-        return $this->rootPath . '/' . ($this->config['dir']['controller'] ?? 'app/controller');
+        return $this->rootPath . '/' . $this->applicationConfig() . '/' . $this->controllerConfig();
     }
 
     /**
