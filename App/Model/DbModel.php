@@ -12,7 +12,7 @@ class DbModel extends BaseModel {
      * 数据库操作对象
      * @var \HuanL\Db\Db
      */
-    protected $db = null;
+    public $db = null;
 
     /**
      * 操作的表
@@ -21,59 +21,66 @@ class DbModel extends BaseModel {
     protected $table = '';
 
     /**
-     * 操作数据队列
-     * @var array
+     * 主键字段
+     * @var string
      */
-    protected $operDataQueue = [];
+    protected $primaryKey = '';
 
     /**
-     * 主键值
-     * @var mixed
-     */
-    protected $primaryKey;
-
-    /**
-     * 操作的条件
+     * 缓存上一次的值
      * @var array
      */
-    protected $where = [];
+    protected $cacheValue = [];
 
-    public function __construct(string $table = '', $where = []) {
+    public function __construct(string $table = '') {
         parent::__construct();
         $this->table = $table;
-        $this->where = $where;
     }
 
-    public function __set($name, $value) {
-        // TODO: Implement __set() method.
-        if (method_exists($this, $name)) {
-            $this->$name($value);
+    /**
+     * 是否存在,会缓存取到的值到value里面
+     * @param $value
+     * @return bool
+     */
+    public function exist($value): bool {
+        $this->db->table($this->table);
+        if (is_array($value)) {
+            $this->db->where($value);
         } else {
-            throw new \Exception('not exist attributes');
+            $this->db->where($this->primaryKey, $value);
         }
+        return ($this->cacheValue = $this->db->find()) !== false;
     }
 
-    public function __get($name) {
-        // TODO: Implement __get() method.
-        if (method_exists($this, $name)) {
-            return $this->$name();
-        } else {
-            throw new \Exception('not exist attributes');
-        }
+    /**
+     * 获取上次取得的值
+     * @return array
+     */
+    public function getValue(): array {
+        return $this->cacheValue;
     }
 
-    public function update() {
-
-        return [];
+    /**
+     * 外部操作数据库
+     * @return \HuanL\Db\Db
+     */
+    public function db(): \HuanL\Db\Db {
+        $this->db->table($this->table);
+        return $this->db;
     }
 
-    //TODO: 表结构读取,先放着
-    protected function loadTableStruts() {
-        //第一次载入时,读取表结构,后面读取缓存
-        $rows = $this->db->query(
-            'select column_name from information_schema.columns ' .
-            'where table_schema = \'tmp\' and table_name = \'cb_book\'');
-        print_r($rows->fetchAll());
+    /**
+     * 分页
+     * @param $pageNumber
+     * @param array $fields
+     * @param int $total
+     * @return array
+     */
+    public function pagination($pageNumber, array $fields, int $number = 20, int &$total = 0): array {
+        $pageNumber = ceil($pageNumber);
+        $pageNumber = $pageNumber < 1 ? 1 : $pageNumber;
+        $this->db->limit($number * ($pageNumber - 1), $number);
+        return $this->db->select()->fetchAll();
     }
 
 }
