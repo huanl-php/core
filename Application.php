@@ -75,6 +75,10 @@ class Application extends Container {
         return $this->config['application'] ?? 'app';
     }
 
+    public function charsetConfig() {
+        return $this->config['charset'] ?? 'utf-8';
+    }
+
     /**
      * 配置中的Controller的值
      * @return mixed|string
@@ -169,11 +173,13 @@ class Application extends Container {
         //加载用户配置的初始组件
         $this->loadInitComponents();
         $return = app('route')->resolve();
+        /** @var \HuanL\Request\Response $response */
+        $response = $this->make('response');
         if (is_string($return) || (method_exists($return, '__toString'))) {
+            $response->contentType('html', $this->charsetConfig());
             echo $return;
         } else if (is_array($return)) {
-            $response = $this->make('response');
-            $response->contentType('json');
+            $response->contentType('json', $this->charsetConfig());
             echo json_encode($return, JSON_UNESCAPED_UNICODE);
         } else if ($return instanceof \HuanL\Request\Response) {
             echo $return->getResponse();

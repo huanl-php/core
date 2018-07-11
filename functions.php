@@ -62,7 +62,9 @@ if (!function_exists('view')) {
         }
         $template = realpath($template);
         $retView = new \HuanL\Viewdeal\View($template, $controller);
-        $retView->setCacheDir(app('path.cache') . '/view');
+        if (!app('debug')){
+            $retView->setCacheDir(app('path.cache') . '/view');
+        }
         return $retView;
     }
 }
