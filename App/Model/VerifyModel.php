@@ -64,7 +64,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
         //读入类文件,使用正则匹配
         $classFileContent = file_get_contents($this->classPath);
         preg_match_all('/\* @(verify|alias) (.*?)[\s]\n|public \$(.*?);/', $classFileContent, $matches, PREG_SET_ORDER);
-        $rule = new Rule();
+        $rule = new Rule($this->verify);
         $ruleArray = [];
         foreach ($matches as $item) {
             if (empty($item[2])) {
@@ -74,7 +74,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
                 $this->verify->addCheckRule($rule);
                 $rule->addRule($ruleArray);
                 $ruleArray = [];
-                $rule = new Rule();
+                $rule = new Rule($this->verify);
             } else {
                 //通过第一个匹配项来判断操作
                 switch ($item[1]) {
@@ -83,6 +83,10 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
                         $param = explode(' ', $item[2]);
                         //提取出参数后,第一个为方法名字,后面的为参数
                         $key = array_shift($param);
+                        //对func进行处理
+                        if ($key == 'func') {
+                            $param[0] = [$this, $param[0]];
+                        }
                         $ruleArray[$key] = $param;
                         break;
                     case 'alias':

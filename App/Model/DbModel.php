@@ -5,8 +5,8 @@ namespace HuanL\Core\App\Model;
 
 use HuanL\Core\Facade\Db;
 
-//TODO:先放一边吧,没什么好的想法怎么去做
-class DbModel extends BaseModel {
+//TODO:还得慢慢完善
+abstract class DbModel extends BaseModel {
 
     /**
      * 数据库操作对象
@@ -18,13 +18,13 @@ class DbModel extends BaseModel {
      * 操作的表
      * @var string
      */
-    protected $table = '';
+    public const table = '';
 
     /**
      * 主键字段
      * @var string
      */
-    protected $primaryKey = '';
+    public const primaryKey = '';
 
     /**
      * 缓存上一次的值
@@ -32,24 +32,23 @@ class DbModel extends BaseModel {
      */
     protected $cacheValue = [];
 
-    public function __construct(string $table = '') {
+    public function __construct() {
         parent::__construct();
-        $this->table = $table;
     }
 
     /**
      * 是否存在,会缓存取到的值到value里面
      * @param $value
-     * @return bool
+     * @return array|bool
      */
-    public function exist($value): bool {
-        $this->db->table($this->table);
+    public static function exist($value) {
+        $db = Db::table(static::table);
         if (is_array($value)) {
-            $this->db->where($value);
+            $db->where($value);
         } else {
-            $this->db->where($this->primaryKey, $value);
+            $db->where(static::primaryKey, $value);
         }
-        return ($this->cacheValue = $this->db->find()) !== false;
+        return $db->find();
     }
 
     /**
@@ -65,7 +64,7 @@ class DbModel extends BaseModel {
      * @return \HuanL\Db\Db
      */
     public function db(): \HuanL\Db\Db {
-        $this->db->table($this->table);
+        $this->db = Db::table(static::table);
         return $this->db;
     }
 
@@ -79,6 +78,7 @@ class DbModel extends BaseModel {
     public function pagination($pageNumber, array $fields, int $number = 20, int &$total = 0): array {
         $pageNumber = ceil($pageNumber);
         $pageNumber = $pageNumber < 1 ? 1 : $pageNumber;
+        $total = $this->db->count();
         $this->db->limit($number * ($pageNumber - 1), $number);
         return $this->db->select()->fetchAll();
     }
