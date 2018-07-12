@@ -65,12 +65,15 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
         $classFileContent = file_get_contents($this->classPath);
         preg_match_all('/\* @(verify|alias) (.*?)[\s]\n|public \$(.*?);/', $classFileContent, $matches, PREG_SET_ORDER);
         $rule = new Rule();
+        $ruleArray = [];
         foreach ($matches as $item) {
             if (empty($item[2])) {
                 //第二个匹配为空则是匹配到了名字
                 //重新设置规则标签
                 $rule->label($item[3]);
                 $this->verify->addCheckRule($rule);
+                $rule->addRule($ruleArray);
+                $ruleArray = [];
                 $rule = new Rule();
             } else {
                 //通过第一个匹配项来判断操作
@@ -80,13 +83,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
                         $param = explode(' ', $item[2]);
                         //提取出参数后,第一个为方法名字,后面的为参数
                         $key = array_shift($param);
-                        $ruleArray[$key] = $param[0];
-                        //如果参数成员大于等于两个参数的话
-                        //还需要对第一个参数进行处理,处理逗号(,)转换为数组的形式
-                        if (count($param[0]) >= 2) {
-                            $ruleArray[$key][0] = explode(',', $param[0]);
-                        }
-                        $rule->addRule($ruleArray);
+                        $ruleArray[$key] = $param;
                         break;
                     case 'alias':
                         $rule->alias($item[2]);
