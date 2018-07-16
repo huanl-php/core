@@ -174,18 +174,20 @@ class Application extends Container {
         $this->loadInitComponents();
         $return = app('route')->resolve();
         /** @var \HuanL\Request\Response $response */
-        $response = $this->make('response');
-        if (is_string($return) || (method_exists($return, '__toString'))) {
-            $response->contentType('html', $this->charsetConfig());
-            echo $return;
-        } else if (is_array($return)) {
-            $response->contentType('json', $this->charsetConfig());
-            echo json_encode($return, JSON_UNESCAPED_UNICODE);
-        } else if ($return instanceof \HuanL\Request\Response) {
+        if ($return instanceof \HuanL\Request\Response) {
             echo $return->getResponse();
-        } else if ($return === false) {
-            $this->make('response')->statusCode(404);
-            echo '404';
+        } else {
+            $response = $this->make('response');
+            if (is_array($return)) {
+                $response->contentType('json', $this->charsetConfig());
+                echo json_encode($return, JSON_UNESCAPED_UNICODE);
+            } else if (is_string($return) || (method_exists($return, '__toString'))) {
+                $response->contentType('html', $this->charsetConfig());
+                echo $return;
+            } else if ($return === false) {
+                $this->make('response')->statusCode(404);
+                echo '404';
+            }
         }
     }
 
