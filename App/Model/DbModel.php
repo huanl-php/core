@@ -63,8 +63,8 @@ abstract class DbModel extends BaseModel {
      * 外部操作数据库
      * @return \HuanL\Db\Db
      */
-    public function db(): \HuanL\Db\Db {
-        $this->db = Db::table(static::table);
+    public function db(string $alias = ''): \HuanL\Db\Db {
+        $this->db = Db::table(static::table . (empty($alias) ? '' : ' as ' . $alias));
         return $this->db;
     }
 
@@ -78,9 +78,13 @@ abstract class DbModel extends BaseModel {
     public function pagination($pageNumber, array $fields, int $number = 20, int &$total = 0): array {
         $pageNumber = ceil($pageNumber);
         $pageNumber = $pageNumber < 1 ? 1 : $pageNumber;
-        $total = $this->db->count();
-        $this->db->limit($number * ($pageNumber - 1), $number);
-        return $this->db->select()->fetchAll();
+        $total = $this->db->field($fields)->count();
+        $record = $this->db->limit($number * ($pageNumber - 1), $number)->select();
+        $rows = [];
+        while ($row = $record->fetch()) {
+            $rows[] = $row;
+        }
+        return $rows;
     }
 
 }
