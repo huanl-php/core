@@ -5,7 +5,7 @@ namespace HuanL\Core\Facade;
 
 /**
  * Class Db
- * @method static \HuanL\Db\Db table(string $table)
+ * @method static \HuanL\Db\Db table(string $table, string $alias = '')
  * @method static bool commit()
  * @method static bool rollback()
  * @method static bool inTransaction()

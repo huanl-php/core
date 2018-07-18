@@ -64,7 +64,7 @@ abstract class DbModel extends BaseModel {
      * @return \HuanL\Db\Db
      */
     public function db(string $alias = ''): \HuanL\Db\Db {
-        $this->db = Db::table(static::table . (empty($alias) ? '' : ' as ' . $alias));
+        $this->db = Db::table(static::table, $alias);
         return $this->db;
     }
 
