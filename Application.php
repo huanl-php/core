@@ -141,11 +141,17 @@ class Application extends Container {
      */
     protected function registerContainerAbstract() {
         $this->singleton('request', \HuanL\Request\Request::class);
+        $this->alias(\HuanL\Request\Request::class, 'request');
         $this->singleton('response', \HuanL\Request\Response::class);
+        $this->alias(\HuanL\Request\Response::class, 'response');
         $this->singleton('route', \HuanL\Routing\Routing::class);
+        $this->alias(\HuanL\Routing\Routing::class, 'route');
         $this->singleton('view', \HuanL\Viewdeal\View::class);
+        $this->alias(\HuanL\Viewdeal\View::class, 'view');
         $this->singleton('dbconnect', \HuanL\Db\DbConnect::class);
+        $this->alias(\HuanL\Db\DbConnect::class, 'dbconnect');
         $this->singleton('db', \HuanL\Db\Db::class);
+        $this->alias(\HuanL\Db\Db::class, 'db');
         //绑定配置中自义定的类型
         foreach ($this->config['abstract'] as $key => $value) {
             $this->singleton($key, $value);
