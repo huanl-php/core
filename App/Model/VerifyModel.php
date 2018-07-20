@@ -129,9 +129,9 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
     /**
      *
      * @param $key
-     * @return string
+     * @return mixed
      */
-    public function getCheckData($key): string {
+    public function getCheckData($key) {
         // TODO: Implement getCheckData() method.
         return empty($this->$key) ? '' : $this->$key;
     }
@@ -142,7 +142,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
      * @param $val
      * @return ICheckDataObject
      */
-    public function setCheckData($key, string $val = ''): ICheckDataObject {
+    public function setCheckData($key, $val = ''): ICheckDataObject {
         // TODO: Implement setCheckData() method.
         $this->$key = $val;
         return $this;

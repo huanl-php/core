@@ -42,7 +42,7 @@ abstract class DbModel extends BaseModel {
      * @return array|bool
      */
     public static function exist($value) {
-        $db = Db::table(static::table);
+        $db = Db::table(static::table)->field(static::primaryKey);
         if (is_array($value)) {
             $db->where($value);
         } else {
