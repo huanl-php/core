@@ -88,11 +88,14 @@ class ExceptionComponents extends Components {
         if ($debug) {
             //输出详细的信息,获取错误文件的代码,附近几行,和跟踪
             //有些使用eval的函数的,判断一下文件是否存在
-            $code = 'File:' . $errfile . '<br/>Line:' . $errline;
+            $code = 'File:' . $errfile . '<br/>Line:' . $errline . '<br/>';
             if (file_exists($errfile)) {
                 $code .= 'Code:<br/><pre>' . static::get_file_line_code($errfile, $errline) . '</pre>';
             }
             $out_html = 'Error Message:' . $errstr . '<br/>' . $code;
+            ob_start();
+            var_dump($trace);
+            $out_html .= '<br/>trace:<br/>' . ob_get_clean();
         } else {
             //直接的报错页面,现在还没用模板直接先输出个文本吧,233
             $out_html = 'error';

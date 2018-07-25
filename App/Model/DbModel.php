@@ -52,6 +52,53 @@ abstract class DbModel extends BaseModel {
     }
 
     /**
+     * 对象插入数据
+     * @param object $object
+     * @param array $exception
+     * @return int
+     * @throws \ReflectionException
+     */
+    public static function insert_o(object $object, array $exception = []): int {
+        $data = self::getClassPropertiesValue($object, \ReflectionProperty::IS_PUBLIC, $exception);
+        return Db::table(static::table)->insert($data);;
+    }
+
+    /**
+     * 获取类的属性值,返回数组
+     * @param object $object
+     * @param int $filter
+     * @param array $exception
+     * @return array
+     * @throws \ReflectionException
+     */
+    protected static function getClassPropertiesValue(object $object, int $filter, array $exception = []) {
+        $data = [];
+        $ref = new \ReflectionClass($object);
+        $properties = $ref->getProperties($filter);
+        foreach ($properties as $item) {
+            $key = $item->name;
+            if (in_array($key, $exception)) {
+                continue;
+            }
+            $data[$key] = $object->$key;
+        }
+        return $data;
+    }
+
+    /**
+     * 对象更新
+     * @param object $object
+     * @param array $where
+     * @param array $exception
+     * @return int
+     * @throws \ReflectionException
+     */
+    public static function update_o(object $object, array $where = [], array $exception = []): int {
+        $data = self::getClassPropertiesValue($object, \ReflectionProperty::IS_PUBLIC, $exception);
+        return Db::table(static::table)->where($where)->update($data);;
+    }
+
+    /**
      * 获取上次取得的值
      * @return array
      */

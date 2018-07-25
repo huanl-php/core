@@ -30,11 +30,7 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
         $this->verify = new Verify();
         $this->verify->bindObject($this);
         //将数据添加到成员
-        foreach ($data as $key => $item) {
-            if (property_exists($this, $key)) {
-                $this->$key = $item;
-            }
-        }
+        $this->setCheckData($data);
         //处理规则
         $this->dealRule();
     }
@@ -144,7 +140,15 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
      */
     public function setCheckData($key, $val = ''): ICheckDataObject {
         // TODO: Implement setCheckData() method.
-        $this->$key = $val;
+        if (func_num_args() == 1 && is_array($key)) {
+            foreach ($key as $k => $item) {
+                if (property_exists($this, $k)) {
+                    $this->$k = $item;
+                }
+            }
+        } else {
+            $this->$key = $val;
+        }
         return $this;
     }
 }
