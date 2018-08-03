@@ -79,7 +79,9 @@ class ExceptionComponents extends Components {
         //暂时用文本,等吧模板引擎弄了后用了后输出模板
         //如果$error是0不处理
         //因为@ error-control operator 前缀的语句发生错误时，这个值会是 0
-        if ($errno == 0 && $error) return false;
+        if ($errno == 0 && $error) {
+            throw new \ErrorException($errstr, $errno, E_ERROR, $errfile, $errline);
+        }
 
         //取出是否为debug模式
         $debug = app('debug');

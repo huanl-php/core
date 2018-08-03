@@ -79,9 +79,13 @@ class RouteComponents extends Components {
      * @return bool
      */
     public function putRouteCache($routeArray): bool {
-        return @file_put_contents(
-            $this->getCacheFilePath($this->controllerPath), json_encode($routeArray)
-        );
+        try {
+            return @file_put_contents(
+                $this->getCacheFilePath($this->controllerPath), json_encode($routeArray)
+            );
+        } catch (\Throwable $throwable) {
+            return false;
+        }
     }
 
     /**
