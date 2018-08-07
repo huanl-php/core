@@ -44,11 +44,23 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
         if ($this->isModelCache()) {
             //有缓存,读取缓存,加入规则
             $cache = json_decode(file_get_contents($this->getCachePath()), true);
+            //需要对func类型的验证进行处理
+            foreach ($cache as $key => $value) {
+                if (isset($cache[$key]['func'])) {
+                    $cache[$key]['func'][0] = [$this, $cache[$key]['func'][0]];
+                }
+            }
             $this->verify->addCheckRule($cache);
         } else {
             //无缓存,分析验证模型文件,写入数据
             $ruleArray = $this->analyzeRule();
             try {
+                //需要对func类型的验证进行处理
+                foreach ($ruleArray as $key => $value) {
+                    if (isset($ruleArray[$key]['func'])) {
+                        $ruleArray[$key]['func'][0] = $ruleArray[$key]['func'][0][1];
+                    }
+                }
                 @file_put_contents($this->getCachePath(), json_encode($ruleArray));
             } catch (\Throwable $throwable) {
 
