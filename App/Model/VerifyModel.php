@@ -75,11 +75,14 @@ abstract class VerifyModel extends BaseModel implements ICheckDataObject {
     protected function analyzeRule(): array {
         //读入类文件,使用正则匹配
         $classFileContent = file_get_contents($this->classPath);
-        preg_match_all('/\* @(verify|alias) (.*?)[\s]\n|public \$(.*?);/', $classFileContent, $matches, PREG_SET_ORDER);
+        preg_match_all('/\* @(verify|alias) (.*?)[\r\n]|public \$(.*?);/', $classFileContent, $matches, PREG_SET_ORDER);
         $rule = new Rule($this->verify);
         $ruleArray = [];
         foreach ($matches as $item) {
             if (empty($item[2])) {
+                if ($ruleArray == []) {
+                    continue;
+                }
                 //第二个匹配为空则是匹配到了名字
                 //重新设置规则标签
                 $rule->label($item[3]);
