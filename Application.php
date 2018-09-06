@@ -35,6 +35,8 @@ class Application extends Container {
         $this->bindContainer();
         $this->registerContainerAbstract();
         $this->loadCoreComponents();
+        //加载用户配置的初始组件
+        $this->loadInitComponents();
     }
 
     /**
@@ -176,8 +178,6 @@ class Application extends Container {
      * 框架运行
      */
     public function run() {
-        //加载用户配置的初始组件
-        $this->loadInitComponents();
         $return = app('route')->resolve();
         /** @var \HuanL\Request\Response $response */
         if ($return instanceof \HuanL\Request\Response) {
