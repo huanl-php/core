@@ -36,7 +36,7 @@ trait ApiController {
             $action = [$_GET[$this->apiField], strtolower($_GET[$this->apiField]) . $name];
         }
         if (method_exists($this, $action[1])) {
-            return app()->call($action);
+            return app()->call($action, array_merge($_GET, $arguments));
         }
         return call_user_func_array([$this, $name], $arguments);
     }
